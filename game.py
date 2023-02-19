@@ -22,6 +22,8 @@ SCREEN_HEIGHT = 600
  
 BLOCK_SIZE = 25
 
+ORIGIN = (0,0)
+
 # Set the boundaries for the rectangles
 BOUNDARY_LEFT = 25
 BOUNDARY_RIGHT = 800
@@ -29,6 +31,57 @@ BOUNDARY_TOP = 25
 BOUNDARY_BOTTOM = 600
  
 # === CLASSES === (CamelCase names)
+
+class Perimeter():
+
+    def __init__(self, a,c,b,d):
+
+        self.a = a
+        self.c = c
+        self.b = b
+        self.d = d
+
+        self.bounding_rects = []
+        
+        self._generate_bounding_rects()
+
+    def _generate_bounding_rects(self):
+
+        #generate horizontal rects
+
+        curr_x = BLOCK_SIZE
+
+        for i in range(self.a):
+
+            self.bounding_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE*5,BLOCK_SIZE))
+
+            curr_x += BLOCK_SIZE*5
+
+        for i in range(self.c):
+
+            self.bounding_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE, BLOCK_SIZE))
+
+            curr_x += BLOCK_SIZE
+
+        #generate vertical rects
+
+        curr_y = BLOCK_SIZE
+
+        for i in range(self.b):
+
+            self.bounding_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE*5))
+
+            curr_y += BLOCK_SIZE*5
+
+        for i in range(self.d):
+
+            self.bounding_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE))
+            
+            curr_y += BLOCK_SIZE
+
+
+
+
  
 class GuidedRect(pygame.Rect):
 
@@ -73,18 +126,22 @@ screen_rect = screen.get_rect()
 button = Button(...)
 '''
 
-perimeter_rects = [
-    pygame.Rect(0,BLOCK_SIZE,BLOCK_SIZE, BLOCK_SIZE*5),
-    pygame.Rect(BLOCK_SIZE,0, BLOCK_SIZE*5, BLOCK_SIZE),
-    pygame.Rect(BLOCK_SIZE*6, 0, BLOCK_SIZE, BLOCK_SIZE),
-    pygame.Rect(0, BLOCK_SIZE*6, BLOCK_SIZE, BLOCK_SIZE)
-]
+# perimeter_rects = [
+#     pygame.Rect(0,BLOCK_SIZE,BLOCK_SIZE, BLOCK_SIZE*5),
+#     pygame.Rect(BLOCK_SIZE,0, BLOCK_SIZE*5, BLOCK_SIZE),
+#     pygame.Rect(BLOCK_SIZE*6, 0, BLOCK_SIZE, BLOCK_SIZE),
+#     pygame.Rect(0, BLOCK_SIZE*6, BLOCK_SIZE, BLOCK_SIZE)
+# ]
+
+perimeter = Perimeter(1,1,1,1)
+
+perimeter_rects = perimeter.bounding_rects
 
 solution_rects = [
     GuidedRect(100, 100, BLOCK_SIZE*5, BLOCK_SIZE*5, (BLOCK_SIZE, BLOCK_SIZE)), # X2
-    GuidedRect(200,200,BLOCK_SIZE*5, BLOCK_SIZE, (BLOCK_SIZE, BLOCK_SIZE*6)), # x_horiz
-    GuidedRect(300, 300, BLOCK_SIZE, BLOCK_SIZE*5, (BLOCK_SIZE*6, BLOCK_SIZE)), #x_vert
-    GuidedRect(400, 400, BLOCK_SIZE, BLOCK_SIZE, (BLOCK_SIZE*6, BLOCK_SIZE*6))
+    GuidedRect(125,125,BLOCK_SIZE*5, BLOCK_SIZE, (BLOCK_SIZE, BLOCK_SIZE*6)), # x_horiz
+    GuidedRect(150, 150, BLOCK_SIZE, BLOCK_SIZE*5, (BLOCK_SIZE*6, BLOCK_SIZE)), #x_vert
+    GuidedRect(17, 175, BLOCK_SIZE, BLOCK_SIZE, (BLOCK_SIZE*6, BLOCK_SIZE*6))
 ]
 
 
