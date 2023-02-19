@@ -32,7 +32,7 @@ BOUNDARY_BOTTOM = 600
  
 # === CLASSES === (CamelCase names)
 
-class Perimeter():
+class BinomialPair():
 
     def __init__(self, a,c,b,d):
 
@@ -41,9 +41,15 @@ class Perimeter():
         self.b = b
         self.d = d
 
-        self.bounding_rects = []
+        self.bounding_horizontal_rects = []
+
+        self.bounding_vertical_rects = []
+
+        self.solution_rects = []
         
         self._generate_bounding_rects()
+
+        self._generate_solutions_rects()
 
     def _generate_bounding_rects(self):
 
@@ -53,13 +59,13 @@ class Perimeter():
 
         for i in range(self.a):
 
-            self.bounding_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE*5,BLOCK_SIZE))
+            self.bounding_horizontal_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE*5,BLOCK_SIZE))
 
             curr_x += BLOCK_SIZE*5
 
         for i in range(self.c):
 
-            self.bounding_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE, BLOCK_SIZE))
+            self.bounding_horizontal_rects.append(pygame.Rect(curr_x, ORIGIN[1], BLOCK_SIZE, BLOCK_SIZE))
 
             curr_x += BLOCK_SIZE
 
@@ -69,16 +75,28 @@ class Perimeter():
 
         for i in range(self.b):
 
-            self.bounding_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE*5))
+            self.bounding_vertical_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE*5))
 
             curr_y += BLOCK_SIZE*5
 
         for i in range(self.d):
 
-            self.bounding_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE))
+            self.bounding_vertical_rects.append(pygame.Rect(ORIGIN[0], curr_y, BLOCK_SIZE, BLOCK_SIZE))
             
             curr_y += BLOCK_SIZE
 
+    def _generate_solutions_rects(self):
+
+        # target x coord comes from horizonal bounding origin
+        # target y coord comes from vertical bounding origin
+        # width is from the horizontal bounding rect
+        # height is from the vertical bounding rect
+
+        for horizontal_rect in self.bounding_horizontal_rects:
+
+            for vertical_rect in self.bounding_vertical_rects:
+
+                self.solution_rects.append(GuidedRect(100, 100, horizontal_rect.width, vertical_rect.height , (horizontal_rect.left, vertical_rect.top)))
 
 
 
@@ -133,16 +151,21 @@ button = Button(...)
 #     pygame.Rect(0, BLOCK_SIZE*6, BLOCK_SIZE, BLOCK_SIZE)
 # ]
 
-perimeter = Perimeter(1,1,1,1)
+binomial_pair = BinomialPair(2,2,1,4)
 
-perimeter_rects = perimeter.bounding_rects
+horizontal_rects = binomial_pair.bounding_horizontal_rects
+vertical_rects = binomial_pair.bounding_vertical_rects
 
-solution_rects = [
-    GuidedRect(100, 100, BLOCK_SIZE*5, BLOCK_SIZE*5, (BLOCK_SIZE, BLOCK_SIZE)), # X2
-    GuidedRect(125,125,BLOCK_SIZE*5, BLOCK_SIZE, (BLOCK_SIZE, BLOCK_SIZE*6)), # x_horiz
-    GuidedRect(150, 150, BLOCK_SIZE, BLOCK_SIZE*5, (BLOCK_SIZE*6, BLOCK_SIZE)), #x_vert
-    GuidedRect(17, 175, BLOCK_SIZE, BLOCK_SIZE, (BLOCK_SIZE*6, BLOCK_SIZE*6))
-]
+perimeter_rects = horizontal_rects + vertical_rects
+
+# solution_rects = [
+#     GuidedRect(100, 100, BLOCK_SIZE*5, BLOCK_SIZE*5, (BLOCK_SIZE, BLOCK_SIZE)), # X2
+#     GuidedRect(125,125,BLOCK_SIZE*5, BLOCK_SIZE, (BLOCK_SIZE, BLOCK_SIZE*6)), # x_horiz
+#     GuidedRect(150, 150, BLOCK_SIZE, BLOCK_SIZE*5, (BLOCK_SIZE*6, BLOCK_SIZE)), #x_vert
+#     GuidedRect(17, 175, BLOCK_SIZE, BLOCK_SIZE, (BLOCK_SIZE*6, BLOCK_SIZE*6))
+# ]
+
+solution_rects = binomial_pair.solution_rects
 
 
  
@@ -214,7 +237,7 @@ while is_running:
         pygame.draw.rect(screen, 'Red', r, 1)
 
     for r in solution_rects:
-        pygame.draw.rect(screen, colors[color_iter], r)
+        pygame.draw.rect(screen, colors[color_iter%4], r)
         color_iter += 1
        
     pygame.display.update()
