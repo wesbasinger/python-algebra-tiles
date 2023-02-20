@@ -103,13 +103,27 @@ class BinomialPair():
 
                     self.solution_rects.append(FiveByFive())
 
+                elif horizontal_rect.width == BLOCK_SIZE*5 and vertical_rect.height == BLOCK_SIZE:
+
+                    self.solution_rects.append(FiveByOne())
+
+                elif horizontal_rect.width == BLOCK_SIZE and vertical_rect.height == BLOCK_SIZE*5:
+
+                    self.solution_rects.append(OneByFive())
+
                 else:
 
-                    self.solution_rects.append(Tile(100, 100, horizontal_rect.width, vertical_rect.height))
+                    self.solution_rects.append(OneByOne())
 
 
- 
 class Tile(pygame.Rect):
+
+    def __init__(self):
+
+        spawn_point = self._generate_spawn_point()
+
+        self.left = spawn_point[0]
+        self.top = spawn_point[1]
 
     def move(self, x, y):
 
@@ -130,13 +144,41 @@ class FiveByFive(Tile):
 
     def __init__(self):
 
-        spawn_point = self._generate_spawn_point()
+        super().__init__()
 
-        self.left = spawn_point[0]
-        self.top = spawn_point[1]
         self.width = BLOCK_SIZE*5
         self.height = BLOCK_SIZE*5
         self.tag = "5x5"
+
+class FiveByOne(Tile):
+
+    def __init__(self):
+
+        super().__init__()
+
+        self.width = BLOCK_SIZE*5
+        self.height = BLOCK_SIZE
+        self.tag = "5x1"
+
+class OneByFive(Tile):
+
+    def __init__(self):
+
+        super().__init__()
+
+        self.width = BLOCK_SIZE
+        self.height = BLOCK_SIZE*5
+        self.tag = "1x5"
+
+class OneByOne(Tile):
+
+    def __init__(self):
+
+        super().__init__()
+
+        self.width = BLOCK_SIZE
+        self.height = BLOCK_SIZE
+        self.tag = "1x1"
 
 
 
@@ -161,13 +203,6 @@ screen_rect = screen.get_rect()
 button = Button(...)
 '''
 
-# perimeter_rects = [
-#     pygame.Rect(0,BLOCK_SIZE,BLOCK_SIZE, BLOCK_SIZE*5),
-#     pygame.Rect(BLOCK_SIZE,0, BLOCK_SIZE*5, BLOCK_SIZE),
-#     pygame.Rect(BLOCK_SIZE*6, 0, BLOCK_SIZE, BLOCK_SIZE),
-#     pygame.Rect(0, BLOCK_SIZE*6, BLOCK_SIZE, BLOCK_SIZE)
-# ]
-
 binomial_pair = BinomialPair(1,1,1,1)
 
 horizontal_rects = binomial_pair.bounding_horizontal_rects
@@ -175,16 +210,7 @@ vertical_rects = binomial_pair.bounding_vertical_rects
 
 perimeter_rects = horizontal_rects + vertical_rects
 
-# solution_rects = [
-#     GuidedRect(100, 100, BLOCK_SIZE*5, BLOCK_SIZE*5, (BLOCK_SIZE, BLOCK_SIZE)), # X2
-#     GuidedRect(125,125,BLOCK_SIZE*5, BLOCK_SIZE, (BLOCK_SIZE, BLOCK_SIZE*6)), # x_horiz
-#     GuidedRect(150, 150, BLOCK_SIZE, BLOCK_SIZE*5, (BLOCK_SIZE*6, BLOCK_SIZE)), #x_vert
-#     GuidedRect(17, 175, BLOCK_SIZE, BLOCK_SIZE, (BLOCK_SIZE*6, BLOCK_SIZE*6))
-# ]
-
 solution_rects = binomial_pair.solution_rects
-
-
  
 dragging = False
    
