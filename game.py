@@ -109,8 +109,6 @@ class BinomialPair():
 
 
  
- 
-
 class Tile(pygame.Rect):
 
     def move(self, x, y):
