@@ -14,6 +14,7 @@ __webpage__ = 'http://blog.furas.pl'
 # ---------------------------------------------------------------------
  
 import pygame
+from random import randint
  
 # === CONSTANS === (UPPER_CASE names)
  
@@ -24,12 +25,12 @@ BLOCK_SIZE = 25
 
 ORIGIN = (0,0)
 
-# Set the boundaries for the rectangles
+# Set the spawn boundaries
 BOUNDARY_LEFT = 25
 BOUNDARY_RIGHT = 800
 BOUNDARY_TOP = 25
 BOUNDARY_BOTTOM = 600
- 
+
 # === CLASSES === (CamelCase names)
 
 class BinomialPair():
@@ -46,6 +47,8 @@ class BinomialPair():
         self.bounding_vertical_rects = []
 
         self.solution_rects = []
+
+        self.snap_points = []
         
         self._generate_bounding_rects()
 
@@ -96,32 +99,48 @@ class BinomialPair():
 
             for vertical_rect in self.bounding_vertical_rects:
 
-                self.solution_rects.append(GuidedRect(100, 100, horizontal_rect.width, vertical_rect.height , (horizontal_rect.left, vertical_rect.top)))
+                if horizontal_rect.width == BLOCK_SIZE*5 and vertical_rect.height == BLOCK_SIZE*5:
 
+                    self.solution_rects.append(FiveByFive())
+
+                else:
+
+                    self.solution_rects.append(Tile(100, 100, horizontal_rect.width, vertical_rect.height))
 
 
  
-class GuidedRect(pygame.Rect):
+ 
 
-    def __init__(self, left, top, width, height, target_coords):
-        self.left = left
-        self.top = top
-        self.width = width
-        self.height = height
-
-        self.target_coords = target_coords
+class Tile(pygame.Rect):
 
     def move(self, x, y):
 
-        if abs(x - self.target_coords[0]) < 10 and abs(y - self.target_coords[1]) < 10:
+            if abs(x - 25) < 10 and abs(y - 25) < 10:
 
-            self.left = self.target_coords[0]
-            self.top = self.target_coords[1]
+                self.left = 25
+                self.top = 25
+            else:
 
-        else:
+                self.left = x
+                self.top = y
 
-            self.left = x
-            self.top = y
+    def _generate_spawn_point(self):
+
+        return (randint(BOUNDARY_LEFT,BOUNDARY_RIGHT), randint(BOUNDARY_TOP, BOUNDARY_BOTTOM))
+
+class FiveByFive(Tile):
+
+    def __init__(self):
+
+        spawn_point = self._generate_spawn_point()
+
+        self.left = spawn_point[0]
+        self.top = spawn_point[1]
+        self.width = BLOCK_SIZE*5
+        self.height = BLOCK_SIZE*5
+        self.tag = "5x5"
+
+
 
 # === FUNCTIONS === (lower_case names)
  
@@ -151,7 +170,7 @@ button = Button(...)
 #     pygame.Rect(0, BLOCK_SIZE*6, BLOCK_SIZE, BLOCK_SIZE)
 # ]
 
-binomial_pair = BinomialPair(2,2,1,4)
+binomial_pair = BinomialPair(1,1,1,1)
 
 horizontal_rects = binomial_pair.bounding_horizontal_rects
 vertical_rects = binomial_pair.bounding_vertical_rects
