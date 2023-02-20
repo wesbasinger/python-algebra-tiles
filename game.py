@@ -103,18 +103,25 @@ class BinomialPair():
 
                     self.solution_rects.append(FiveByFive())
 
+                    self.snap_points.append(('5x5', horizontal_rect.left, vertical_rect.top))
+
                 elif horizontal_rect.width == BLOCK_SIZE*5 and vertical_rect.height == BLOCK_SIZE:
 
                     self.solution_rects.append(FiveByOne())
+
+                    self.snap_points.append(('5x1', horizontal_rect.left, vertical_rect.top))
 
                 elif horizontal_rect.width == BLOCK_SIZE and vertical_rect.height == BLOCK_SIZE*5:
 
                     self.solution_rects.append(OneByFive())
 
+                    self.snap_points.append(('1x5', horizontal_rect.left, vertical_rect.top))
+
                 else:
 
                     self.solution_rects.append(OneByOne())
 
+                    self.snap_points.append(('1x1', horizontal_rect.left, vertical_rect.top))
 
 class Tile(pygame.Rect):
 
