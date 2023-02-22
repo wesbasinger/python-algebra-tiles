@@ -49,6 +49,8 @@ class BinomialPair():
         self.solution_rects = []
 
         self.all_snap_points = []
+
+        self.solved = False
         
         self._generate_bounding_rects()
 
@@ -57,6 +59,16 @@ class BinomialPair():
         for solution_rect in self.solution_rects:
 
             solution_rect.set_snap_points(solution_rect.tag, self.all_snap_points)
+
+    def is_solved(self):
+
+        for rect in solution_rects:
+
+            if not rect.locked:
+
+                return False
+
+        return True
 
     def _generate_bounding_rects(self):
 
@@ -250,6 +262,18 @@ is_running = True
 active_rect = None
  
 while is_running:
+
+    if binomial_pair.is_solved():
+
+        binomial_pair = BinomialPair(randint(1,2), randint(1,3), randint(1,1), randint(1,2))
+
+        horizontal_rects = binomial_pair.bounding_horizontal_rects
+        vertical_rects = binomial_pair.bounding_vertical_rects
+
+        perimeter_rects = horizontal_rects + vertical_rects
+
+        solution_rects = binomial_pair.solution_rects
+ 
  
     # --- events ---
    
