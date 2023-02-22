@@ -48,11 +48,15 @@ class BinomialPair():
 
         self.solution_rects = []
 
-        self.snap_points = []
+        self.all_snap_points = []
         
         self._generate_bounding_rects()
 
         self._generate_solutions_rects()
+
+        for solution_rect in self.solution_rects:
+
+            solution_rect.set_snap_points(solution_rect.tag, self.all_snap_points)
 
     def _generate_bounding_rects(self):
 
@@ -103,25 +107,25 @@ class BinomialPair():
 
                     self.solution_rects.append(FiveByFive())
 
-                    self.snap_points.append(('5x5', horizontal_rect.left, vertical_rect.top))
+                    self.all_snap_points.append(('5x5', horizontal_rect.left, vertical_rect.top))
 
                 elif horizontal_rect.width == BLOCK_SIZE*5 and vertical_rect.height == BLOCK_SIZE:
 
                     self.solution_rects.append(FiveByOne())
 
-                    self.snap_points.append(('5x1', horizontal_rect.left, vertical_rect.top))
+                    self.all_snap_points.append(('5x1', horizontal_rect.left, vertical_rect.top))
 
                 elif horizontal_rect.width == BLOCK_SIZE and vertical_rect.height == BLOCK_SIZE*5:
 
                     self.solution_rects.append(OneByFive())
 
-                    self.snap_points.append(('1x5', horizontal_rect.left, vertical_rect.top))
+                    self.all_snap_points.append(('1x5', horizontal_rect.left, vertical_rect.top))
 
                 else:
 
                     self.solution_rects.append(OneByOne())
 
-                    self.snap_points.append(('1x1', horizontal_rect.left, vertical_rect.top))
+                    self.all_snap_points.append(('1x1', horizontal_rect.left, vertical_rect.top))
 
 class Tile(pygame.Rect):
 
@@ -132,20 +136,38 @@ class Tile(pygame.Rect):
         self.left = spawn_point[0]
         self.top = spawn_point[1]
 
+        self.snap_points = []
+
+        self.locked = False
+
+        self.final_coords = None
+
     def move(self, x, y):
 
-            if abs(x - 25) < 10 and abs(y - 25) < 10:
+        for snap_point in self.snap_points:
 
-                self.left = 25
-                self.top = 25
-            else:
+            if abs(x - snap_point[1]) < 10 and abs(y - snap_point[2]) < 10:
 
-                self.left = x
-                self.top = y
+                self.final_coords = (snap_point[1], snap_point[2])
+
+                self.x = self.final_coords[0]
+                self.y = self.final_coords[1]
+
+                self.locked = True
+        else:
+
+            self.left = x
+            self.top = y
 
     def _generate_spawn_point(self):
 
         return (randint(BOUNDARY_LEFT,BOUNDARY_RIGHT), randint(BOUNDARY_TOP, BOUNDARY_BOTTOM))
+
+    def set_snap_points(self, tag, all_snap_points):
+
+        for result in filter(lambda snap_point : snap_point[0] == tag, all_snap_points):
+
+            self.snap_points.append(result)
 
 class FiveByFive(Tile):
 
@@ -257,8 +279,11 @@ while is_running:
         elif event.type == pygame.MOUSEMOTION:
             if dragging: # selected can be `0` so `is not None` is required
                 # move object
+                if not active_rect.locked:
+                    active_rect.move(event.pos[0] + selected_offset_x, event.pos[1] + selected_offset_y)
+                else:
+                    active_rect.move(active_rect.final_coords[0], active_rect.final_coords[1])
 
-                active_rect.move(event.pos[0] + selected_offset_x, event.pos[1] + selected_offset_y)
                
         # --- objects events ---
  
