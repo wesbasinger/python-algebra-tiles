@@ -15,6 +15,7 @@ __webpage__ = 'http://blog.furas.pl'
  
 import pygame
 from random import randint
+from time import sleep
  
 # === CONSTANS === (UPPER_CASE names)
  
@@ -171,6 +172,12 @@ class Tile(pygame.Rect):
             self.left = x
             self.top = y
 
+    def kill_snap_point(self, snap_point):
+
+        if snap_point in self.snap_points:
+
+            self.snap_points.remove(snap_point)
+
     def _generate_spawn_point(self):
 
         return (randint(BOUNDARY_LEFT,BOUNDARY_RIGHT), randint(BOUNDARY_TOP, BOUNDARY_BOTTOM))
@@ -265,6 +272,8 @@ while is_running:
 
     if binomial_pair.is_solved():
 
+        dragging = False
+
         binomial_pair = BinomialPair(randint(1,2), randint(1,3), randint(1,1), randint(1,2))
 
         horizontal_rects = binomial_pair.bounding_horizontal_rects
@@ -307,12 +316,14 @@ while is_running:
                     active_rect.move(event.pos[0] + selected_offset_x, event.pos[1] + selected_offset_y)
                 else:
                     active_rect.move(active_rect.final_coords[0], active_rect.final_coords[1])
+                    for rect in solution_rects:
+
+                        rect.kill_snap_point((active_rect.tag, active_rect.final_coords[0], active_rect.final_coords[1]))
 
                
         # --- objects events ---
  
         '''
-       button.handle_event(event)
        '''
        
     # --- updates ---
