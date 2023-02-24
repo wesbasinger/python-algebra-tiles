@@ -244,6 +244,8 @@ pygame.init()
  
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 screen_rect = screen.get_rect()
+
+score = 0
  
 # --- objects ---
  
@@ -270,7 +272,28 @@ active_rect = None
  
 while is_running:
 
+    # create a font object.
+    # 1st parameter is the font file
+    # which is present in pygame.
+    # 2nd parameter is size of the font
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    
+    # create a text surface object,
+    # on which text is drawn on it.
+    text = font.render('Score:' + str(score), True, 'Green', 'Blue')
+    
+    # create a rectangular object for the
+    # text surface object
+    textRect = text.get_rect()
+    
+    # set the center of the rectangular object.
+    textRect.center = (700, 50)
+
     if binomial_pair.is_solved():
+
+        score += 1
+
+        print(score)
 
         dragging = False
 
@@ -333,6 +356,8 @@ while is_running:
     # --- draws ---
    
     screen.fill('Black')
+
+    screen.blit(text, textRect)
  
     '''
     button.draw(screen)    
