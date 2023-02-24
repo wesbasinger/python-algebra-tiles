@@ -16,6 +16,7 @@ __webpage__ = 'http://blog.furas.pl'
 import pygame
 from random import randint
 from time import sleep
+import os
  
 # === CONSTANS === (UPPER_CASE names)
  
@@ -248,10 +249,14 @@ screen_rect = screen.get_rect()
 score = 0
  
 # --- objects ---
- 
-'''
-button = Button(...)
-'''
+
+five_by_five_img = pygame.image.load(os.path.join('graphics', '5x5.png'))
+
+one_by_one_img = pygame.image.load(os.path.join('graphics', '1x1.png'))
+
+five_by_one_img = pygame.image.load(os.path.join('graphics', '5x1.png'))
+
+one_by_five_img = pygame.image.load(os.path.join('graphics', '1x5.png'))
 
 binomial_pair = BinomialPair(1,1,1,1)
 
@@ -292,8 +297,6 @@ while is_running:
     if binomial_pair.is_solved():
 
         score += 1
-
-        print(score)
 
         dragging = False
 
@@ -362,18 +365,20 @@ while is_running:
     '''
     button.draw(screen)    
     '''
-
-    colors = ['Yellow', 'Orange', 'Blue', 'Gray']
-
-    color_iter = 0
    
     # draw rect
     for r in perimeter_rects:
         pygame.draw.rect(screen, 'Red', r, 1)
 
     for r in solution_rects:
-        pygame.draw.rect(screen, colors[color_iter%4], r)
-        color_iter += 1
+        if r.tag == "5x5":
+            screen.blit(five_by_five_img, (r.left, r.top))
+        elif r.tag == "1x1":
+            screen.blit(one_by_one_img, (r.left, r.top))
+        elif r.tag == "1x5":
+            screen.blit(one_by_five_img, (r.left, r.top))
+        elif r.tag == "5x1":
+            screen.blit(five_by_one_img, (r.left, r.top))
        
     pygame.display.update()
  

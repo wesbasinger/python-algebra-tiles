@@ -20,6 +20,7 @@ python game.py
 1. implement a score tracker
     - (2/23/23)
 2. change the tiles to images with gradients/etc
+    - (2/23/23)
 3. Implement a stroke outline
 4. Implement scenes for increasing difficulty
     - positives and negatives
