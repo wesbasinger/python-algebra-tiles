@@ -11,7 +11,7 @@ git clone https://github.com/wesbasinger/python-algebra-tiles.git
 cd python-algebra-tiles
 python3 -m venv venv
 source venv/bin/activate
-pip install - requirements.txt
+pip install -r requirements.txt
 python game.py
 ```
 

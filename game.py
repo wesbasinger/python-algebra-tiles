@@ -62,6 +62,12 @@ class BinomialPair():
 
             solution_rect.set_snap_points(solution_rect.tag, self.all_snap_points)
 
+        outer_dims = self._get_total_outline()
+
+        self.width = outer_dims[0]
+
+        self.height = outer_dims[1]
+
     def is_solved(self):
 
         for rect in solution_rects:
@@ -77,6 +83,7 @@ class BinomialPair():
         #generate horizontal rects
 
         curr_x = BLOCK_SIZE
+
 
         for i in range(self.a):
 
@@ -140,6 +147,23 @@ class BinomialPair():
                     self.solution_rects.append(OneByOne())
 
                     self.all_snap_points.append(('1x1', horizontal_rect.left, vertical_rect.top))
+    
+    def _get_total_outline(self):
+
+        width = 0
+
+        for rect in self.bounding_horizontal_rects:
+
+            width += rect.width
+
+        height = 0
+
+        for rect in self.bounding_vertical_rects:
+
+            height += rect.height
+
+        return (width, height)
+
 
 class Tile(pygame.Rect):
 
@@ -369,6 +393,8 @@ while is_running:
     # draw rect
     for r in perimeter_rects:
         pygame.draw.rect(screen, 'Red', r, 1)
+
+    pygame.draw.rect(screen, 'Red', pygame.Rect(BLOCK_SIZE, BLOCK_SIZE, binomial_pair.width, binomial_pair.height), 1)
 
     for r in solution_rects:
         if r.tag == "5x5":
